@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/go-chi/chi"
-	user_handler "otus_sn_go/internal/handlers/user-handler"
+	user_auth_handler "otus_sn_go/internal/handlers/user-auth-handler"
 )
 
 func RegisterRouter() *chi.Mux {
@@ -16,8 +16,8 @@ func RegisterRouter() *chi.Mux {
 			// 	r.Get("/", user.GetUserHandler)
 			// 	r.With(AuthMiddleware).Delete("/", user.DeleteUserHandler)
 			// })
-			r.Post("/register", user_handler.RegisterUserHandler)
-			r.Post("/login", user_handler.LoginUserHandler)
+			r.Post("/register", user_auth_handler.RegisterUserHandler)
+			r.Post("/login", user_auth_handler.LoginUserHandler)
 		})
 	})
 	return r

@@ -1,16 +1,13 @@
-package user_handler
+package user_auth_handler
 
 import (
 	"encoding/json"
-	jwtauth "github.com/go-chi/jwtauth/v5"
 	"github.com/go-playground/validator/v10"
 	"io/ioutil"
 	"net/http"
-	"os"
 	httpHelper "otus_sn_go/internal/helpers/http"
+	jwt_helper "otus_sn_go/internal/helpers/jwt"
 	user2 "otus_sn_go/internal/models/user"
-	"strconv"
-	"time"
 )
 
 func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -75,19 +72,11 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ttlStr, _ := os.LookupEnv("JWT_TOKEN_TTL")
-	ttl, _ := strconv.Atoi(ttlStr)
-	secret, _ := os.LookupEnv("JWT_SECRET")
-	tokenAuth := jwtauth.New("HS256", []byte(secret), nil)
-	expiresIn := time.Now().Local().Add(time.Second * time.Duration(ttl))
-	_, tokenString, _ := tokenAuth.Encode(map[string]interface{}{
-		"user_id":    user.Id,
-		"expires_in": expiresIn.UTC().String(),
-	})
+	token := jwt_helper.GenerateJwtToken(user)
 
 	httpHelper.JsonResponse(w, map[string]interface{}{
-		"token":      tokenString,
-		"expires_in": expiresIn.UTC().String(),
+		"token":      token.Token,
+		"expires_in": token.ExpiresIn.UTC().String(),
 		"user":       user.ToResponse(),
 	})
 }

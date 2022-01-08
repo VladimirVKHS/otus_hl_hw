@@ -6,6 +6,7 @@ import (
 	goose "github.com/pressly/goose/v3"
 	"net/http"
 	"os"
+	jwt_helper "otus_sn_go/internal/helpers/jwt"
 	"otus_sn_go/internal/logger"
 	_ "otus_sn_go/internal/migrations"
 	"otus_sn_go/internal/otusdb"
@@ -65,6 +66,7 @@ func main() {
 		panic(err)
 	}
 
+	jwt_helper.Init()
 	// Chi routes
 	http.Handle("/", routes.RegisterRouter())
 
