@@ -26,21 +26,25 @@ func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 	validate := validator.New()
 	validationErrs := validate.Struct(user)
 	if validationErrs != nil {
-		httpHelper.ValidationErrorResponse(w)
+		httpHelper.ValidationErrorResponse(w, validationErrs.Error())
 		return
 	}
 
 	if err := user.ValidateUnique(r.Context()); err != nil {
-		http.Error(w, "NotUnique", http.StatusUnprocessableEntity)
+		httpHelper.ValidationErrorResponse(w, err.Error())
 		return
 	}
 
 	user.SetPassword(user.Password)
 
 	if err := user.Save(r.Context()); err != nil {
-		httpHelper.ValidationErrorResponse(w)
+		httpHelper.ValidationErrorResponse(w, err.Error())
 		return
 	}
 	user.Refresh(r.Context())
 	httpHelper.JsonResponse(w, user.ToResponse())
+}
+
+func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
+
 }

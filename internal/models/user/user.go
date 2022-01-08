@@ -20,6 +20,11 @@ type User struct {
 	IsPublic  bool
 }
 
+type UserLoginRequest struct {
+	Login    string `validate:"lte=255,required"`
+	Password string `validate:"lte=255,required"`
+}
+
 func (u *User) Save(ctx context.Context) error {
 	if u.Id != 0 {
 		_, err := otusdb.Db.QueryContext(
@@ -64,7 +69,7 @@ func (u *User) ValidateUnique(ctx context.Context) error {
 		}
 	}
 	if count > 0 {
-		return errors.New("Not unique")
+		return errors.New("Not a unique login")
 	}
 	return nil
 }

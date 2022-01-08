@@ -17,9 +17,15 @@ func JsonResponse(w http.ResponseWriter, data interface{}) {
 	_, _ = w.Write(jsonData)
 }
 
-func ValidationErrorResponse(w http.ResponseWriter) {
+func ValidationErrorResponse(w http.ResponseWriter, error string) {
+	jsonData, err := json.Marshal(map[string]interface{}{"error": error})
+	if err != nil {
+		http.Error(w, "InternalServerError", http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusUnprocessableEntity)
+	_, _ = w.Write(jsonData)
 }
 
 func InternalServerErrorResponse(w http.ResponseWriter) {
