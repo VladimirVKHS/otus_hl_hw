@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+	"otus_sn_go/internal/helpers/hash"
 	"otus_sn_go/internal/otusdb"
 )
 
@@ -73,11 +74,33 @@ func (u *User) Refresh(ctx context.Context) error {
 	return err
 }
 
+func (u *User) SetPassword(password string) error {
+	passwordHash, err := hash.HashPassword(password)
+	if err != nil {
+		return err
+	}
+	u.Password = passwordHash
+	return nil
+}
+
+func (u *User) CheckPassword(password string) bool {
+	return hash.CheckPasswordHash(password, u.Password)
+}
+
 func GetUserById(ctx context.Context, id int, user *User) error {
 	err := otusdb.Db.QueryRowContext(
 		ctx,
 		"SELECT id, first_name, last_name, password, login, age, interests, is_public, created_at FROM users WHERE id = ?",
 		id,
+	).Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.Age, &user.Interests, &user.IsPublic, &user.CreatedAt)
+	return err
+}
+
+func GetUserByLogin(ctx context.Context, login string, user *User) error {
+	err := otusdb.Db.QueryRowContext(
+		ctx,
+		"SELECT id, first_name, last_name, password, login, age, interests, is_public, created_at FROM users WHERE login = ?",
+		login,
 	).Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.Age, &user.Interests, &user.IsPublic, &user.CreatedAt)
 	return err
 }
