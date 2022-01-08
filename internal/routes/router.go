@@ -17,6 +17,7 @@ func RegisterRouter() *chi.Mux {
 			// 	r.With(AuthMiddleware).Delete("/", user.DeleteUserHandler)
 			// })
 			r.Post("/register", user_handler.RegisterUserHandler)
+			r.Post("/login", user_handler.LoginUserHandler)
 		})
 	})
 	return r
