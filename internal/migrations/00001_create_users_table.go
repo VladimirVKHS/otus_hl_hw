@@ -15,10 +15,12 @@ func upCreateUsersTable(tx *sql.Tx) error {
 			    id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 			    first_name VARCHAR(255),
 			    last_name VARCHAR(255),
+			    login VARCHAR(255),
 			    password VARCHAR(255),
 				age INTEGER,
 				interests VARCHAR(4096),
 				city VARCHAR(4096),
+				is_public TINYINT(1),
 			    created_at TIMESTAMP
             );
 		`)
