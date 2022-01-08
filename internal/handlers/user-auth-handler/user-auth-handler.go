@@ -8,6 +8,7 @@ import (
 	httpHelper "otus_sn_go/internal/helpers/http"
 	jwt_helper "otus_sn_go/internal/helpers/jwt"
 	user2 "otus_sn_go/internal/models/user"
+	"time"
 )
 
 func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +77,15 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	httpHelper.JsonResponse(w, map[string]interface{}{
 		"token":      token.Token,
-		"expires_in": token.ExpiresIn.UTC().String(),
+		"expires_in": token.ExpiresIn.UTC().Format(time.RFC3339),
 		"user":       user.ToResponse(),
+	})
+}
+
+func MeHandler(w http.ResponseWriter, r *http.Request) {
+	var user *user2.User
+	user = r.Context().Value("user").(*user2.User)
+	httpHelper.JsonResponse(w, map[string]interface{}{
+		"user": user.ToResponse(),
 	})
 }

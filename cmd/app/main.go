@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
-	goose "github.com/pressly/goose/v3"
+	"github.com/pressly/goose/v3"
 	"net/http"
 	"os"
 	jwt_helper "otus_sn_go/internal/helpers/jwt"

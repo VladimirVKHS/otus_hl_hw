@@ -10,6 +10,7 @@ require (
 	github.com/go-playground/validator/v10 v10.10.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/joho/godotenv v1.4.0 // indirect
+	github.com/lestrrat-go/jwx v1.2.6 // indirect
 	github.com/lib/pq v1.10.4 // indirect
 	github.com/mattn/go-sqlite3 v1.14.10 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

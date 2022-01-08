@@ -2,7 +2,9 @@ package routes
 
 import (
 	"github.com/go-chi/chi"
+	"github.com/go-chi/jwtauth/v5"
 	user_auth_handler "otus_sn_go/internal/handlers/user-auth-handler"
+	jwt_helper "otus_sn_go/internal/helpers/jwt"
 )
 
 func RegisterRouter() *chi.Mux {
@@ -18,6 +20,7 @@ func RegisterRouter() *chi.Mux {
 			// })
 			r.Post("/register", user_auth_handler.RegisterUserHandler)
 			r.Post("/login", user_auth_handler.LoginUserHandler)
+			r.With(jwtauth.Verifier(jwt_helper.TokenAuth), AuthMiddleware).Get("/me", user_auth_handler.MeHandler)
 		})
 	})
 	return r
