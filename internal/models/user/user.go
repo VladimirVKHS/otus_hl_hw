@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+	"fmt"
 	"otus_sn_go/internal/helpers/hash"
 	"otus_sn_go/internal/otusdb"
 )
@@ -25,13 +26,25 @@ type UserLoginRequest struct {
 	Password string `validate:"lte=255,required"`
 }
 
+type UserProfileUpdateRequest struct {
+	Login     string `validate:"lte=255,required"`
+	FirstName string `validate:"lte=255,required"`
+	LastName  string `validate:"lte=255,required"`
+	Password  string `validate:"lte=255"`
+	Age       int    `validate:"min=18,max=150,required"`
+	Interests string `validate:"lte=4096"`
+	City      string `validate:"lte=255,required"`
+	IsPublic  bool
+}
+
 func (u *User) Save(ctx context.Context) error {
 	if u.Id != 0 {
 		_, err := otusdb.Db.QueryContext(
 			ctx,
-			"UPDATE users SET login = ?, first_name = ?, last_name = ?, password = ?, age = ?, interests = ?, city = ?, is_piblic = ? WHERE id = ?",
-			u.Login, u.FirstName, u.LastName, u.Password, u.Age, u.Interests, u.City, u.Id, u.IsPublic,
+			"UPDATE users SET login = ?, first_name = ?, last_name = ?, password = ?, age = ?, interests = ?, city = ?, is_public = ? WHERE id = ?",
+			u.Login, u.FirstName, u.LastName, u.Password, u.Age, u.Interests, u.City, u.IsPublic, u.Id,
 		)
+		fmt.Println("SAVED", u)
 		return err
 	}
 	result, err := otusdb.Db.ExecContext(
@@ -49,7 +62,7 @@ func (u *User) Save(ctx context.Context) error {
 
 func (u *User) ValidateUnique(ctx context.Context) error {
 	count := -1
-	if u.Id != 0 {
+	if u.Id == 0 {
 		err := otusdb.Db.QueryRowContext(
 			ctx,
 			"SELECT count(*) as c FROM users WHERE login = ?",
@@ -92,24 +105,6 @@ func (u *User) CheckPassword(password string) bool {
 	return hash.CheckPasswordHash(password, u.Password)
 }
 
-func GetUserById(ctx context.Context, id int, user *User) error {
-	err := otusdb.Db.QueryRowContext(
-		ctx,
-		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, created_at FROM users WHERE id = ?",
-		id,
-	).Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.City, &user.Age, &user.Interests, &user.IsPublic, &user.CreatedAt)
-	return err
-}
-
-func GetUserByLogin(ctx context.Context, login string, user *User) error {
-	err := otusdb.Db.QueryRowContext(
-		ctx,
-		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, created_at FROM users WHERE login = ?",
-		login,
-	).Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.City, &user.Age, &user.Interests, &user.IsPublic, &user.CreatedAt)
-	return err
-}
-
 func (u *User) ToResponse() map[string]interface{} {
 	return map[string]interface{}{
 		"Id":        u.Id,
@@ -122,4 +117,12 @@ func (u *User) ToResponse() map[string]interface{} {
 		"IsPublic":  u.IsPublic,
 		"CreatedAt": u.CreatedAt,
 	}
+}
+
+func UsersToResponse(users []*User) []map[string]interface{} {
+	var result []map[string]interface{}
+	for _, u := range users {
+		result = append(result, u.ToResponse())
+	}
+	return result
 }

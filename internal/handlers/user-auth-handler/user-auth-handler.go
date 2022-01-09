@@ -83,8 +83,7 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func MeHandler(w http.ResponseWriter, r *http.Request) {
-	var user *user2.User
-	user = r.Context().Value("user").(*user2.User)
+	user, _ := jwt_helper.GetCurrentUser(r.Context())
 	httpHelper.JsonResponse(w, map[string]interface{}{
 		"user": user.ToResponse(),
 	})
