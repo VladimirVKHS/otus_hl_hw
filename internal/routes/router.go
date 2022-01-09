@@ -2,6 +2,9 @@ package routes
 
 import (
 	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
+	spa "github.com/roberthodgen/spa-server"
+	"os"
 	user_auth_handler "otus_sn_go/internal/handlers/user-auth-handler"
 	user_data_handler "otus_sn_go/internal/handlers/user-data-handler"
 	user_profile_handler "otus_sn_go/internal/handlers/user-profile-handler"
@@ -10,7 +13,19 @@ import (
 func RegisterRouter() *chi.Mux {
 
 	r := chi.NewRouter()
-	r.With(JwtMiddleware).Route("/api", func(r chi.Router) {
+	r.With(
+		JwtMiddleware,
+		cors.Handler(cors.Options{
+			// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
+			AllowedOrigins: []string{"https://*", "http://*"},
+			// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+			AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+			ExposedHeaders:   []string{"Link"},
+			AllowCredentials: true,
+			MaxAge:           300, // Maximum value not ignored by any of major browsers
+		}),
+	).Route("/api", func(r chi.Router) {
 		r.Route("/auth", func(r chi.Router) {
 			r.Post("/register", user_auth_handler.RegisterUserHandler)
 			r.Post("/login", user_auth_handler.LoginUserHandler)
@@ -28,5 +43,7 @@ func RegisterRouter() *chi.Mux {
 			})
 		})
 	})
+	webclientDir, _ := os.LookupEnv("WEBCLIENT_DIR")
+	r.Get("/*", spa.SpaHandler(webclientDir, "index.html").ServeHTTP)
 	return r
 }

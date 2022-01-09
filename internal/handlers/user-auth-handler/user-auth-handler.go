@@ -5,6 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"io/ioutil"
 	"net/http"
+	user_data_handler "otus_sn_go/internal/handlers/user-data-handler"
 	httpHelper "otus_sn_go/internal/helpers/http"
 	jwt_helper "otus_sn_go/internal/helpers/jwt"
 	user2 "otus_sn_go/internal/models/user"
@@ -84,7 +85,5 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 
 func MeHandler(w http.ResponseWriter, r *http.Request) {
 	user, _ := jwt_helper.GetCurrentUser(r.Context())
-	httpHelper.JsonResponse(w, map[string]interface{}{
-		"user": user.ToResponse(),
-	})
+	user_data_handler.OutputWithFriends(user, w, r)
 }
