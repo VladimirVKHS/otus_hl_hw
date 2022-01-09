@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"errors"
-	"fmt"
 	"otus_sn_go/internal/helpers/hash"
 	"otus_sn_go/internal/otusdb"
 )
@@ -44,7 +43,6 @@ func (u *User) Save(ctx context.Context) error {
 			"UPDATE users SET login = ?, first_name = ?, last_name = ?, password = ?, age = ?, interests = ?, city = ?, is_public = ? WHERE id = ?",
 			u.Login, u.FirstName, u.LastName, u.Password, u.Age, u.Interests, u.City, u.IsPublic, u.Id,
 		)
-		fmt.Println("SAVED", u)
 		return err
 	}
 	result, err := otusdb.Db.ExecContext(

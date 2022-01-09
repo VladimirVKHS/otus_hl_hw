@@ -3,7 +3,6 @@ package routes
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/lestrrat-go/jwx/jwt"
 	"net/http"
@@ -46,7 +45,6 @@ func JwtMiddleware(next http.Handler) http.Handler {
 			error = errors.New("Unauthorized")
 		}
 		if error != nil {
-			fmt.Println(error)
 			ctx = context.WithValue(ctx, jwt_helper.JWT_ERROR_KEY, error.Error())
 		}
 		next.ServeHTTP(w, r.WithContext(ctx))

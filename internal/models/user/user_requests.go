@@ -7,10 +7,25 @@ import (
 )
 
 type UsersListResponse struct {
-	Users      []*User
+	Items      []*User
 	Page       int
 	PerPage    int
 	TotalItems int
+}
+
+func (r *UsersListResponse) ToResponse() map[string]interface{} {
+	var items interface{}
+	if len(r.Items) > 0 {
+		items = UsersToResponse(r.Items)
+	} else {
+		items = make([]string, 0)
+	}
+	return map[string]interface{}{
+		"page":        r.Page,
+		"per_page":    r.PerPage,
+		"total_items": r.TotalItems,
+		"items":       items,
+	}
 }
 
 func GetUserById(ctx context.Context, id int, user *User) error {
@@ -70,9 +85,9 @@ func GetPublicUsers(ctx context.Context, result *UsersListResponse) error {
 	}
 	rows, err2 := otusdb.Db.QueryContext(
 		ctx,
-		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, created_at FROM users WHERE is_public = 1 OFFSET ? LIMIT ? ORDER BY id",
-		result.PerPage*(result.Page-1),
+		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, created_at FROM users WHERE is_public = 1 ORDER BY id LIMIT ? OFFSET ?",
 		result.PerPage,
+		result.PerPage*(result.Page-1),
 	)
 	if err2 != nil {
 		return err2
@@ -84,7 +99,7 @@ func GetPublicUsers(ctx context.Context, result *UsersListResponse) error {
 		if err != nil {
 			return err
 		}
-		result.Users = append(result.Users, user)
+		result.Items = append(result.Items, user)
 	}
 	return nil
 }

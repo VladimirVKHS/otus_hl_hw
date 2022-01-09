@@ -1,4 +1,4 @@
-package user_friends_handler
+package user_data_handler
 
 import (
 	"fmt"

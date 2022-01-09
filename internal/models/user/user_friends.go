@@ -81,7 +81,7 @@ func (u *User) AddToFriends(ctx context.Context, friendId int) error {
 
 func (u *User) RemoveFromFriends(ctx context.Context, friendId int) error {
 	if u.Id == friendId {
-		return errors.New("Unaccptable friend ID")
+		return errors.New("Unacceptable friend ID")
 	}
 	_, err := otusdb.Db.ExecContext(
 		ctx,
@@ -89,4 +89,20 @@ func (u *User) RemoveFromFriends(ctx context.Context, friendId int) error {
 		u.Id, friendId,
 	)
 	return err
+}
+
+func (u *User) IsFriendOrSubscriber(ctx context.Context, targetUserId int) (bool, error) {
+	if u.Id == targetUserId {
+		return true, nil
+	}
+	var count int
+	err := otusdb.Db.QueryRowContext(
+		ctx,
+		"SELECT count(*) as c FROM user_friends WHERE user_id =? AND friend_id = ?",
+		targetUserId, u.Id,
+	).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
