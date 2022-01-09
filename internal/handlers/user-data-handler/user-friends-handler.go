@@ -68,28 +68,9 @@ func OutputWithFriends(user *user2.User, w http.ResponseWriter, r *http.Request)
 		logger.Error(err.Error())
 		httpHelper.InternalServerErrorResponse(w)
 	}
-	var incoming interface{}
-	if len(friendsData.IncomingRequests) > 0 {
-		incoming = user2.UsersToResponse(friendsData.IncomingRequests)
-	} else {
-		incoming = make([]string, 0)
-	}
-	var outgoing interface{}
-	if len(friendsData.OutgoingRequests) > 0 {
-		outgoing = user2.UsersToResponse(friendsData.OutgoingRequests)
-	} else {
-		outgoing = make([]string, 0)
-	}
-	var friends interface{}
-	if len(friendsData.Friends) > 0 {
-		friends = user2.UsersToResponse(friendsData.Friends)
-	} else {
-		friends = make([]string, 0)
-	}
-	httpHelper.JsonResponse(w, map[string]interface{}{
-		"user":              user.ToResponse(),
-		"incoming_requests": incoming,
-		"outgoing_requests": outgoing,
-		"friends":           friends,
-	})
+
+	response := friendsData.ToResponse()
+	response["user"] = user.ToResponse()
+
+	httpHelper.JsonResponse(w, response)
 }

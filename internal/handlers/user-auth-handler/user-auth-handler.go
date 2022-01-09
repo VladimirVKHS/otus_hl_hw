@@ -2,12 +2,14 @@ package user_auth_handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"io/ioutil"
 	"net/http"
 	user_data_handler "otus_sn_go/internal/handlers/user-data-handler"
 	httpHelper "otus_sn_go/internal/helpers/http"
 	jwt_helper "otus_sn_go/internal/helpers/jwt"
+	"otus_sn_go/internal/logger"
 	user2 "otus_sn_go/internal/models/user"
 	"time"
 )
@@ -76,11 +78,18 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := jwt_helper.GenerateJwtToken(user)
 
-	httpHelper.JsonResponse(w, map[string]interface{}{
-		"token":      token.Token,
-		"expires_in": token.ExpiresIn.UTC().Format(time.RFC3339),
-		"user":       user.ToResponse(),
-	})
+	friendsData, err := user.GetFriendsData(r.Context())
+	if err != nil {
+		fmt.Println(err)
+		logger.Error(err.Error())
+		httpHelper.InternalServerErrorResponse(w)
+	}
+	response := friendsData.ToResponse()
+	response["token"] = token.Token
+	response["expires_in"] = token.ExpiresIn.UTC().Format(time.RFC3339)
+	response["user"] = user.ToResponse()
+
+	httpHelper.JsonResponse(w, response)
 }
 
 func MeHandler(w http.ResponseWriter, r *http.Request) {

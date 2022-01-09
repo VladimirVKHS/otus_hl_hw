@@ -1,0 +1,12 @@
+<div class="uk-row-first"
+     style="margin-bottom: 16px;">
+  <div class="uk-panel uk-panel-box" style="min-height: 120px">
+    <h3 class="uk-panel-title"><i class="uk-icon-user"></i>{{user.FirstName}} {{user.LastName}}</h3>
+    city: {{user.City}}, age: {{user.Age}}
+    <div class="uk-button-group">
+      <a class="uk-button uk-button-success" routerLink="/users/{{user.Id}}"> <i class="uk-icon-eye"></i> View</a>
+      <a class="uk-button uk-button-primary" href="JavaScript:" *ngIf="showAddFriend" (click)="addToFriends(user)">+ friends</a>
+      <a class="uk-button uk-button-danger" href="JavaScript:" *ngIf="showRemoveFromFriends" (click)="removeFromFriends(user)">- friends</a>
+    </div>
+  </div>
+</div>

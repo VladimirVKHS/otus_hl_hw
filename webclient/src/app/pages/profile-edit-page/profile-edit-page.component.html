@@ -1,0 +1,51 @@
+<div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+  <app-main-menu></app-main-menu>
+  <div class="uk-grid">
+    <div class="uk-width-1-2">
+      <form class="uk-panel uk-panel-box uk-form" [formGroup]="form">
+        <div class="uk-form-row">
+          <input
+            [ngClass]="{'uk-form-danger': form.get('Login').invalid && form.get('Login').touched}"
+            class="uk-width-1-1 uk-form-large" type="text" placeholder="Login" formControlName="Login">
+        </div>
+        <div class="uk-form-row">
+          <input
+            [ngClass]="{'uk-form-danger': form.get('Password').invalid && form.get('Password').touched}"
+            class="uk-width-1-1 uk-form-large" type="password" placeholder="Password" formControlName="Password">
+        </div>
+        <div class="uk-form-row">
+          <input
+            [ngClass]="{'uk-form-danger': form.get('FirstName').invalid && form.get('FirstName').touched}"
+            class="uk-width-1-1 uk-form-large" type="text" placeholder="First name" formControlName="FirstName">
+        </div>
+        <div class="uk-form-row">
+          <input
+            [ngClass]="{'uk-form-danger': form.get('LastName').invalid && form.get('LastName').touched}"
+            class="uk-width-1-1 uk-form-large" type="text" placeholder="Last name" formControlName="LastName">
+        </div>
+        <div class="uk-form-row">
+          <input
+            [ngClass]="{'uk-form-danger': form.get('City').invalid && form.get('City').touched}"
+            class="uk-width-1-1 uk-form-large" type="text" placeholder="City" formControlName="City">
+        </div>
+        <div class="uk-form-row">
+          <input
+            [ngClass]="{'uk-form-danger': form.get('Age').invalid && form.get('Age').touched}"
+            class="uk-width-1-1 uk-form-large" type="number" placeholder="Age" formControlName="Age">
+        </div>
+        <div class="uk-form-row">
+        <textarea
+          [ngClass]="{'uk-form-danger': form.get('Interests').invalid && form.get('Interests').touched}"
+          class="uk-width-1-1 uk-form-large" placeholder="Interests" formControlName="Interests"></textarea>
+        </div>
+        <div class="uk-form-row uk-text-small">
+          <label class="uk-float-left"><input type="checkbox" formControlName="IsPublic"> public profile</label>
+        </div>
+        <div class="uk-form-row ">
+          <a class="uk-width-1-1 uk-button uk-button-primary uk-button-large" href="JavaScript:" (click)="save()">Save</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
