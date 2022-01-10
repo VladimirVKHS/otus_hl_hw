@@ -31,18 +31,18 @@ func (r *UsersListResponse) ToResponse() map[string]interface{} {
 func GetUserById(ctx context.Context, id int, user *User) error {
 	err := otusdb.Db.QueryRowContext(
 		ctx,
-		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, created_at FROM users WHERE id = ?",
+		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, sex, created_at FROM users WHERE id = ?",
 		id,
-	).Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.City, &user.Age, &user.Interests, &user.IsPublic, &user.CreatedAt)
+	).Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.City, &user.Age, &user.Interests, &user.IsPublic, &user.Sex, &user.CreatedAt)
 	return err
 }
 
 func GetUserByLogin(ctx context.Context, login string, user *User) error {
 	err := otusdb.Db.QueryRowContext(
 		ctx,
-		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, created_at FROM users WHERE login = ?",
+		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, sex, created_at FROM users WHERE login = ?",
 		login,
-	).Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.City, &user.Age, &user.Interests, &user.IsPublic, &user.CreatedAt)
+	).Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.City, &user.Age, &user.Interests, &user.IsPublic, &user.Sex, &user.CreatedAt)
 	return err
 }
 
@@ -57,7 +57,7 @@ func GetUsersByIds(ctx context.Context, ids []int) ([]*User, error) {
 	}
 	rows, err := otusdb.Db.QueryContext(
 		ctx,
-		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, created_at FROM users WHERE id IN (?"+strings.Repeat(",?", len(args)-1)+") ORDER BY id",
+		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, sex, created_at FROM users WHERE id IN (?"+strings.Repeat(",?", len(args)-1)+") ORDER BY id",
 		args...,
 	)
 	if err != nil {
@@ -66,7 +66,7 @@ func GetUsersByIds(ctx context.Context, ids []int) ([]*User, error) {
 	defer rows.Close()
 	for rows.Next() {
 		user := &User{}
-		err := rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.City, &user.Age, &user.Interests, &user.IsPublic, &user.CreatedAt)
+		err := rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.City, &user.Age, &user.Interests, &user.IsPublic, &user.Sex, &user.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -85,7 +85,7 @@ func GetPublicUsers(ctx context.Context, result *UsersListResponse) error {
 	}
 	rows, err2 := otusdb.Db.QueryContext(
 		ctx,
-		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, created_at FROM users WHERE is_public = 1 ORDER BY id LIMIT ? OFFSET ?",
+		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, sex, created_at FROM users WHERE is_public = 1 ORDER BY id LIMIT ? OFFSET ?",
 		result.PerPage,
 		result.PerPage*(result.Page-1),
 	)
@@ -95,7 +95,7 @@ func GetPublicUsers(ctx context.Context, result *UsersListResponse) error {
 	defer rows.Close()
 	for rows.Next() {
 		user := &User{}
-		err := rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.City, &user.Age, &user.Interests, &user.IsPublic, &user.CreatedAt)
+		err := rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Password, &user.Login, &user.City, &user.Age, &user.Interests, &user.IsPublic, &user.Sex, &user.CreatedAt)
 		if err != nil {
 			return err
 		}
