@@ -47,6 +47,7 @@ export class ProfileEditPageComponent implements OnInit {
       City: [this.data.user.City, [Validators.required, Validators.maxLength(255)]],
       Interests: [this.data.user.Interests, [Validators.required, Validators.maxLength(4096)]],
       Age: [this.data.user.Age, [Validators.required, Validators.min(18), Validators.max(150)]],
+      Sex: [this.data.user.Sex, [Validators.required]],
       IsPublic: [this.data.user.IsPublic],
     });
   }

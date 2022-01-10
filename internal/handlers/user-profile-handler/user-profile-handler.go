@@ -39,6 +39,7 @@ func ProfileUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	user.Age = profileUpdateRequest.Age
 	user.Interests = profileUpdateRequest.Interests
 	user.IsPublic = profileUpdateRequest.IsPublic
+	user.Sex = profileUpdateRequest.Sex
 	if profileUpdateRequest.Password != "" {
 		user.SetPassword(profileUpdateRequest.Password)
 	}

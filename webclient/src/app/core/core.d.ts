@@ -10,6 +10,7 @@ declare interface IUserProfile {
   City: string;
   Interests: string;
   Age: number;
+  Sex: string;
   IsPublic: boolean;
 }
 

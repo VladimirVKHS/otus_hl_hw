@@ -16,6 +16,7 @@ type User struct {
 	Age       int    `validate:"min=18,max=150,required"`
 	Interests string `validate:"lte=4096"`
 	City      string `validate:"lte=255,required"`
+	Sex       string `validate:"oneof=male female,required"`
 	CreatedAt string
 	IsPublic  bool
 }
@@ -33,6 +34,7 @@ type UserProfileUpdateRequest struct {
 	Age       int    `validate:"min=18,max=150,required"`
 	Interests string `validate:"lte=4096"`
 	City      string `validate:"lte=255,required"`
+	Sex       string `validate:"oneof=male female,required"`
 	IsPublic  bool
 }
 
@@ -40,15 +42,15 @@ func (u *User) Save(ctx context.Context) error {
 	if u.Id != 0 {
 		_, err := otusdb.Db.QueryContext(
 			ctx,
-			"UPDATE users SET login = ?, first_name = ?, last_name = ?, password = ?, age = ?, interests = ?, city = ?, is_public = ? WHERE id = ?",
-			u.Login, u.FirstName, u.LastName, u.Password, u.Age, u.Interests, u.City, u.IsPublic, u.Id,
+			"UPDATE users SET login = ?, first_name = ?, last_name = ?, password = ?, age = ?, interests = ?, city = ?, is_public = ?, sex = ? WHERE id = ?",
+			u.Login, u.FirstName, u.LastName, u.Password, u.Age, u.Interests, u.City, u.IsPublic, u.Sex, u.Id,
 		)
 		return err
 	}
 	result, err := otusdb.Db.ExecContext(
 		ctx,
-		"INSERT INTO users (login, first_name, last_name, password, age, interests, city, is_public, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())",
-		u.Login, u.FirstName, u.LastName, u.Password, u.Age, u.Interests, u.City, u.IsPublic,
+		"INSERT INTO users (login, first_name, last_name, password, age, interests, city, is_public, sex, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())",
+		u.Login, u.FirstName, u.LastName, u.Password, u.Age, u.Interests, u.City, u.IsPublic, u.Sex,
 	)
 	if err != nil {
 		return err
@@ -113,6 +115,7 @@ func (u *User) ToResponse() map[string]interface{} {
 		"Interests": u.Interests,
 		"City":      u.City,
 		"IsPublic":  u.IsPublic,
+		"Sex":       u.Sex,
 		"CreatedAt": u.CreatedAt,
 	}
 }

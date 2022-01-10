@@ -22,6 +22,9 @@ export class ApiInterceptorService implements HttpInterceptor {
       req = this.addToken(req, token);
       return next.handle(req).pipe(
         catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            auth.logout();
+          }
           if (error.status === 403) {
             router.navigateByUrl('/');
           }

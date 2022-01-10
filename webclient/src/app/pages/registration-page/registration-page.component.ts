@@ -27,6 +27,7 @@ export class RegistrationPageComponent implements OnInit {
       City: ['', [Validators.required, Validators.maxLength(255)]],
       Interests: ['', [Validators.required, Validators.maxLength(4096)]],
       Age: ['', [Validators.required, Validators.min(18), Validators.max(150)]],
+      Sex: [null, [Validators.required]],
       IsPublic: [true],
     });
   }
