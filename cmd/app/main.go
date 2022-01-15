@@ -6,6 +6,7 @@ import (
 	"github.com/pressly/goose/v3"
 	"net/http"
 	"os"
+	"otus_sn_go/internal/commands"
 	jwt_helper "otus_sn_go/internal/helpers/jwt"
 	"otus_sn_go/internal/logger"
 	_ "otus_sn_go/internal/migrations"
@@ -56,6 +57,22 @@ func main() {
 			}
 			exit = true
 		}
+		if command == "db:create-fake-users" {
+			count := 1
+			var err error
+			if len(args) >= 3 {
+				count, err = strconv.Atoi(args[2])
+				if err != nil {
+					panic(err)
+				}
+			}
+			err = commands.DbCreateFakeUser(count)
+			if err != nil {
+				panic(err)
+			}
+			exit = true
+		}
+
 		if exit {
 			return
 		}

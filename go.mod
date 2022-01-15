@@ -4,12 +4,14 @@ go 1.15
 
 require (
 	github.com/ClickHouse/clickhouse-go v1.5.1 // indirect
+	github.com/cheggaaa/pb/v3 v3.0.8 // indirect
 	github.com/denisenkom/go-mssqldb v0.11.0 // indirect
 	github.com/go-chi/chi v1.5.4 // indirect
 	github.com/go-chi/cors v1.2.0 // indirect
 	github.com/go-chi/jwtauth/v5 v5.0.2 // indirect
 	github.com/go-playground/validator/v10 v10.10.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/jaswdr/faker v1.8.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/lestrrat-go/jwx v1.2.6 // indirect
 	github.com/lib/pq v1.10.4 // indirect
