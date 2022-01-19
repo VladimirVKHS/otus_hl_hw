@@ -11,6 +11,7 @@ require (
 	github.com/go-chi/jwtauth/v5 v5.0.2 // indirect
 	github.com/go-playground/validator/v10 v10.10.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/golang-sql/sqlexp v0.0.0-20170517235910-f1bb20e5a188 // indirect
 	github.com/jaswdr/faker v1.8.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/lestrrat-go/jwx v1.2.6 // indirect

@@ -35,10 +35,13 @@ declare interface IItemsResponse<T> {
   total_items: number;
   page: number;
   per_page: number;
+  search: string;
+  get_all: number;
 }
 
 declare interface IItemsQuery {
   page?: number;
   per_page?: number;
+  search?: string;
 }
 

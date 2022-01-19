@@ -45,6 +45,9 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 	if result.PerPage == 0 {
 		result.PerPage = 10
 	}
+	getAll, _ := strconv.Atoi(r.URL.Query().Get("get_all"))
+	result.GetAll = getAll > 0
+	result.Search = r.URL.Query().Get("search")
 
 	err := user2.GetPublicUsers(r.Context(), result)
 	if err != nil {
