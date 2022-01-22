@@ -20,6 +20,7 @@ func InitDb() {
 	dbName, _ := os.LookupEnv("DB_NAME")
 	dbPort, _ := os.LookupEnv("DB_PORT")
 	db, err := sql.Open("mysql", dbUser+":"+dbPassword+"@tcp("+dbHost+":"+dbPort+")/"+dbName)
+	db.SetMaxOpenConns(10)
 	if err != nil {
 		panic(err)
 	}
