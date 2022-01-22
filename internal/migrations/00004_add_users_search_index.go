@@ -11,7 +11,7 @@ func init() {
 
 func upAddUsersSearchIndex(tx *sql.Tx) error {
 	_, err := tx.Exec(`
-			ALTER TABLE users ADD INDEX users_search (first_name, last_name)
+			ALTER TABLE users ADD INDEX users_search (first_name, last_name, is_public)
 		`)
 	if err != nil {
 		return err
