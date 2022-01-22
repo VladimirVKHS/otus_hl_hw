@@ -89,7 +89,7 @@ func GetPublicUsers(ctx context.Context, result *UsersListResponse) error {
 	}
 
 	if !result.GetAll {
-		limitQuery = fmt.Sprintf(" ORDER BY id LIMIT %d OFFSET %d", result.PerPage, result.PerPage*(result.Page-1))
+		limitQuery = fmt.Sprintf(" LIMIT %d OFFSET %d", result.PerPage, result.PerPage*(result.Page-1))
 		err := otusdb.Db.QueryRowContext(
 			ctx,
 			"SELECT count(id) as c FROM users WHERE "+searchQuery+"is_public = 1",
@@ -104,8 +104,8 @@ func GetPublicUsers(ctx context.Context, result *UsersListResponse) error {
 		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, sex, created_at FROM users WHERE "+
 			searchQuery+
 			"is_public = 1"+
-			limitQuery+
-			" ORDER BY id",
+			" ORDER BY id"+
+			limitQuery,
 	)
 	if err2 != nil {
 		return err2
