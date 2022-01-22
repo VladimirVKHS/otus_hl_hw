@@ -104,7 +104,8 @@ func GetPublicUsers(ctx context.Context, result *UsersListResponse) error {
 		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, sex, created_at FROM users WHERE "+
 			searchQuery+
 			"is_public = 1"+
-			limitQuery,
+			limitQuery+
+			" ORDER BY id",
 	)
 	if err2 != nil {
 		return err2
