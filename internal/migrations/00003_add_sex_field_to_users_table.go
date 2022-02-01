@@ -11,7 +11,7 @@ func init() {
 
 func upAddSexFieldToUsersTable(tx *sql.Tx) error {
 	_, err := tx.Exec(`
-			ALTER TABLE users ADD COLUMN IF NOT EXISTS sex enum('male','female');
+			ALTER TABLE users ADD COLUMN sex ENUM('male','female');
 		`)
 	if err != nil {
 		return err
@@ -21,7 +21,7 @@ func upAddSexFieldToUsersTable(tx *sql.Tx) error {
 
 func downAddSexFieldToUsersTable(tx *sql.Tx) error {
 	_, err := tx.Exec(`
-			ALTER TABLE users DROP COLUMN IF EXISTS sex;
+			ALTER TABLE users DROP COLUMN sex;
 		`)
 	if err != nil {
 		return err

@@ -1,0 +1,76 @@
+version: '3'
+
+services:
+  master:
+    container_name: otus_sn_mysql_master
+    build:
+      context: ./docker/mysql/master
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: otus
+    volumes:
+      - ./docker/mysql/scripts:/docker-entrypoint-initdb.d
+      - ./docker/mysql/master/data:/var/lib/mysql
+    ports:
+      - "33061:3306"
+    networks:
+      - internal
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '1.0'
+
+  slave1:
+    container_name: otus_sn_mysql_slave1
+    build:
+      context: ./docker/mysql/slave1
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: otus
+    volumes:
+      - ./docker/mysql/scripts:/docker-entrypoint-initdb.d
+      - ./docker/mysql/slave1/data:/var/lib/mysql
+    ports:
+      - "33062:3306"
+    networks:
+      - internal
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '1.0'
+  slave2:
+    container_name: otus_sn_mysql_slave2
+    build:
+      context: ./docker/mysql/slave2
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: otus
+    volumes:
+      - ./docker/mysql/scripts:/docker-entrypoint-initdb.d
+      - ./docker/mysql/slave2/data:/var/lib/mysql
+    ports:
+      - "33063:3306"
+    networks:
+      - internal
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '1.0'
+networks:
+  internal:
+    driver: bridge
