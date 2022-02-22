@@ -6,6 +6,7 @@ import { ApiInterceptorService } from './services/api-interceptor.service';
 import { UsersApiService } from './services/users-api.service';
 import { GuestOnlyGuard } from './guards/guest-only.guard';
 import {AuthorizedOnlyGuard} from './guards/authorized-only.guard';
+import {PostsApiService} from './services/posts-api.service';
 
 
 
@@ -20,6 +21,7 @@ import {AuthorizedOnlyGuard} from './guards/authorized-only.guard';
     ApiService,
     {provide: HTTP_INTERCEPTORS, useClass: ApiInterceptorService, multi: true},
     UsersApiService,
+    PostsApiService,
     GuestOnlyGuard,
     AuthorizedOnlyGuard,
   ]

@@ -1,0 +1,11 @@
+<div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+  <app-main-menu></app-main-menu>
+  <h2>Feed</h2>
+  <div class="uk-grid">
+    <app-post-card
+      class="uk-width-1-1"
+      *ngFor="let post of postsResponse.items"
+      [post]="post"
+    ></app-post-card>
+  </div>
+</div>

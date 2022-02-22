@@ -17,6 +17,12 @@
       <a routerLink="/profile">Profile</a>
     </li>
     <li *ngIf="authorized">
+      <a routerLink="/create_post">Create post</a>
+    </li>
+    <li *ngIf="authorized">
+      <a routerLink="/feed">Feed</a>
+    </li>
+    <li *ngIf="authorized">
       <a href="JavaScript:" (click)="logout()">Logout</a>
     </li>
   </ul>
@@ -40,6 +46,12 @@
       </li>
       <li routerLinkActive="uk-active" *ngIf="authorized">
         <a routerLink="/profile">Profile</a>
+      </li>
+      <li *ngIf="authorized">
+        <a routerLink="/create_post">Create post</a>
+      </li>
+      <li *ngIf="authorized">
+        <a routerLink="/feed">Feed</a>
       </li>
       <li *ngIf="authorized">
         <a href="JavaScript:" (click)="logout()">Logout</a>

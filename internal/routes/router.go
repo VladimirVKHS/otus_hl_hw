@@ -7,6 +7,7 @@ import (
 	"os"
 	user_auth_handler "otus_sn_go/internal/handlers/user-auth-handler"
 	user_data_handler "otus_sn_go/internal/handlers/user-data-handler"
+	user_posts_handler "otus_sn_go/internal/handlers/user-posts-handler"
 	user_profile_handler "otus_sn_go/internal/handlers/user-profile-handler"
 )
 
@@ -40,7 +41,14 @@ func RegisterRouter() *chi.Mux {
 				r.Get("/", user_data_handler.GetUserHandler)
 				r.With(AuthMiddleware).Post("/add_to_friends", user_data_handler.AddToFriendsHandler)
 				r.With(AuthMiddleware).Post("/remove_from_friends", user_data_handler.RemoveFromFriendsHandler)
+				r.Route("/posts", func(r chi.Router) {
+					r.Get("/", user_posts_handler.GetUsersPostsHandler)
+				})
 			})
+		})
+		r.Route("/posts", func(r chi.Router) {
+			r.With(AuthMiddleware).Post("/", user_posts_handler.CreatePostHandler)
+			r.With(AuthMiddleware).Get("/feed", user_posts_handler.GetUserFeedHandler)
 		})
 	})
 	webclientDir, _ := os.LookupEnv("WEBCLIENT_DIR")

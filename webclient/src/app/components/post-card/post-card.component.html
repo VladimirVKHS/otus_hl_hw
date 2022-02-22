@@ -1,0 +1,8 @@
+<div class="uk-width-medium">
+  <div class="uk-panel uk-panel-box">
+    <h3 class="uk-panel-title">{{post.Title}}</h3>
+    <div>Author: {{post.user ? post.user.FirstName + ' ' + post.user.LastName : '-'}}</div>
+    <div>{{post.UpdatedAt}}</div>
+    <pre>{{post.Body}}</pre>
+  </div>
+</div>

@@ -31,6 +31,16 @@
         <app-user-card *ngFor="let user of data.outgoing_requests" [user]="user" class="uk-width-medium-1-3"></app-user-card>
         <div *ngIf="!data.outgoing_requests.length">-</div>
       </div>
+      <ng-container *ngIf="posts">
+        <h2>Posts</h2>
+        <div class="uk-grid">
+          <app-post-card
+            class="uk-width-1-1"
+            *ngFor="let post of posts"
+            [post]="post"
+          ></app-post-card>
+        </div>
+      </ng-container>
     </article>
   </div>
 </div>

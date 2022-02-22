@@ -1,0 +1,58 @@
+package user_posts_handler
+
+import (
+	"github.com/go-chi/chi"
+	"net/http"
+	httpHelper "otus_sn_go/internal/helpers/http"
+	jwt_helper "otus_sn_go/internal/helpers/jwt"
+	"otus_sn_go/internal/logger"
+	"otus_sn_go/internal/models/post"
+	user2 "otus_sn_go/internal/models/user"
+	"strconv"
+)
+
+func GetUsersPostsHandler(w http.ResponseWriter, r *http.Request) {
+
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	targetUser := &user2.User{}
+	if err := user2.GetUserById(r.Context(), id, targetUser); err != nil {
+		httpHelper.NotFoundErrorResponse(w)
+		return
+	}
+
+	if !targetUser.IsPublic {
+		user, _ := jwt_helper.GetCurrentUser(r.Context())
+		if user == nil {
+			httpHelper.ForbiddenResponse(w)
+			return
+		}
+		isFriendOrSubscriber, _ := user.IsFriendOrSubscriber(r.Context(), targetUser.Id)
+		if !isFriendOrSubscriber {
+			httpHelper.ForbiddenResponse(w)
+			return
+		}
+	}
+
+	result := &post.PostsListResponse{}
+	result.Page, _ = strconv.Atoi(r.URL.Query().Get("page"))
+	if result.Page == 0 {
+		result.Page = 1
+	}
+	result.PerPage, _ = strconv.Atoi(r.URL.Query().Get("per_page"))
+	if result.PerPage == 0 {
+		result.PerPage = 10
+	}
+	getAll, _ := strconv.Atoi(r.URL.Query().Get("get_all"))
+	result.GetAll = getAll > 0
+	result.Search = r.URL.Query().Get("search")
+	result.GetTotalItems = true
+
+	err := post.GetUserPosts(r.Context(), targetUser, result)
+	if err != nil {
+		logger.Error(err.Error())
+		httpHelper.InternalServerErrorResponse(w)
+		return
+	}
+
+	httpHelper.JsonResponse(w, result.ToResponse())
+}

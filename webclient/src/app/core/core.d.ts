@@ -39,9 +39,26 @@ declare interface IItemsResponse<T> {
   get_all: number;
 }
 
+declare interface IPostsResponse extends IItemsResponse<IPost> {
+  users: IUser[];
+}
+
 declare interface IItemsQuery {
   page?: number;
   per_page?: number;
   search?: string;
+  get_total_items?: number;
 }
 
+declare interface IPostCreateRequest {
+  Title: string;
+  Body: string;
+}
+
+declare interface IPost extends IPostCreateRequest {
+  Id: number;
+  UserId: number;
+  UpdatedAt: string;
+  CreatedAt: string;
+  user: IUser;
+}

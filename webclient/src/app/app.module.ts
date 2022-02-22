@@ -13,6 +13,10 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RegistrationPageComponent } from './pages/registration-page/registration-page.component';
 import { ProfileEditPageComponent } from './pages/profile-edit-page/profile-edit-page.component';
+import { PostCardComponent } from './components/post-card/post-card.component';
+import { PostPageComponent } from './pages/post-page/post-page.component';
+import { CreatePostPageComponent } from './pages/create-post-page/create-post-page.component';
+import { FeedPageComponentComponent } from './pages/feed-page-component/feed-page-component.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,11 @@ import { ProfileEditPageComponent } from './pages/profile-edit-page/profile-edit
     Page404Component,
     LoginPageComponent,
     RegistrationPageComponent,
-    ProfileEditPageComponent
+    ProfileEditPageComponent,
+    PostCardComponent,
+    PostPageComponent,
+    CreatePostPageComponent,
+    FeedPageComponentComponent
   ],
   imports: [
     BrowserModule,

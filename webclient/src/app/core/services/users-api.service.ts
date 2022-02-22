@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import {Observable} from 'rxjs';
 import {HttpParams} from '@angular/common/http';
+import {tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,23 @@ export class UsersApiService {
           fromObject: query as any
         })
       }
+    );
+  }
+
+  public getUserPosts(userId: number, query: IItemsQuery = {}): Observable<IPostsResponse> {
+    return this.api.get(
+      this.endpoint + String(userId) + '/posts',
+      {
+        params: new HttpParams({
+          fromObject: query as any
+        })
+      }
+    ).pipe(
+      tap((response: IPostsResponse) => {
+        response.items.forEach((post) => {
+          post.user = response.users.find(u => u.Id === post.UserId);
+        });
+      })
     );
   }
 

@@ -10,6 +10,9 @@ import {RegistrationPageComponent} from './pages/registration-page/registration-
 import {ProfileEditPageComponent} from './pages/profile-edit-page/profile-edit-page.component';
 import {AuthorizedOnlyGuard} from './core/guards/authorized-only.guard';
 import {ProfileResolverService} from './core/resolvers/profile-resolver.service';
+import {CreatePostPageComponent} from './pages/create-post-page/create-post-page.component';
+import {FeedPageComponentComponent} from './pages/feed-page-component/feed-page-component.component';
+import {FeedResolverService} from './core/resolvers/feed-resolver.service';
 
 const routes: Routes = [
   {
@@ -50,6 +53,25 @@ const routes: Routes = [
     canActivateChild: [AuthorizedOnlyGuard],
     resolve: {
       user_data: ProfileResolverService
+    }
+  },
+  {
+    path : 'create_post',
+    component: CreatePostPageComponent,
+    pathMatch: 'full',
+    canLoad: [AuthorizedOnlyGuard],
+    canActivate: [AuthorizedOnlyGuard],
+    canActivateChild: [AuthorizedOnlyGuard],
+  },
+  {
+    path : 'feed',
+    component: FeedPageComponentComponent,
+    pathMatch: 'full',
+    canLoad: [AuthorizedOnlyGuard],
+    canActivate: [AuthorizedOnlyGuard],
+    canActivateChild: [AuthorizedOnlyGuard],
+    resolve: {
+      feed: FeedResolverService
     }
   },
   {
