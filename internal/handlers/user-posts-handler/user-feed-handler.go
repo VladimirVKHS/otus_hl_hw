@@ -13,7 +13,7 @@ func GetUserFeedHandler(w http.ResponseWriter, r *http.Request) {
 	result := &post.PostsListResponse{}
 	result.GetTotalItems = false
 	result.PerPage = 1000
-	if err := post.GetUserFeed(r.Context(), user, result); err != nil {
+	if err := post.GetUserFeed(r.Context(), user, result, false); err != nil {
 		logger.Error(err.Error())
 		httpHelper.InternalServerErrorResponse(w)
 		return

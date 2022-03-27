@@ -19,3 +19,7 @@ Golang backend + angular web client
     DB_NAME=otus
     HTTP_PORT=8085
     WEBCLIENT_DIR=webclient/dist/webclient
+    REDIS_HOST=127.0.0.1
+    REDIS_PORT=16379
+    RABBIT_HOST=127.0.0.1
+    RABBIT_PORT=15671

@@ -6,6 +6,8 @@ import (
 	arraysHelper "otus_sn_go/internal/helpers/arrays"
 	"otus_sn_go/internal/models/user"
 	"otus_sn_go/internal/otusdb"
+	"otus_sn_go/internal/otusredis"
+	"strconv"
 )
 
 type PostsListResponse struct {
@@ -124,7 +126,13 @@ func GetUserPosts(ctx context.Context, user *user.User, result *PostsListRespons
 	return nil
 }
 
-func GetUserFeed(ctx context.Context, user *user.User, result *PostsListResponse) error {
+func GetUserFeed(ctx context.Context, user *user.User, result *PostsListResponse, force bool) error {
+	if !force {
+		if err := GetUserFeedFromCache(ctx, user, result); err == nil {
+			fmt.Println("Get user feed from cache - OK")
+			return nil
+		}
+	}
 	whereQuery := fmt.Sprintf(
 		"user_id IN (SELECT friend_id FROM user_friends WHERE user_id = %d)",
 		user.Id,
@@ -132,5 +140,28 @@ func GetUserFeed(ctx context.Context, user *user.User, result *PostsListResponse
 	if err := GetPosts(ctx, whereQuery, result); err != nil {
 		return err
 	}
+	_ = SaveUserFeedToCache(ctx, user, result)
 	return nil
+}
+
+func GetUserFeedFromCache(ctx context.Context, user *user.User, result *PostsListResponse) error {
+	key := userFeedCacheKey(user)
+	var ptr interface{} = result
+	if err := otusredis.LockCacheGet(ctx, key, &ptr); err != nil {
+		return err
+	}
+	return nil
+}
+
+func SaveUserFeedToCache(ctx context.Context, user *user.User, result *PostsListResponse) error {
+	key := userFeedCacheKey(user)
+	var ptr interface{} = result
+	if err := otusredis.LockCacheSet(ctx, key, ptr); err != nil {
+		return err
+	}
+	return nil
+}
+
+func userFeedCacheKey(user *user.User) string {
+	return "user_feed_" + strconv.Itoa(user.Id)
 }

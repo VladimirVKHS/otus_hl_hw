@@ -1,6 +1,7 @@
 package user_posts_handler
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/go-playground/validator/v10"
 	"io/ioutil"
@@ -9,6 +10,7 @@ import (
 	jwt_helper "otus_sn_go/internal/helpers/jwt"
 	"otus_sn_go/internal/logger"
 	"otus_sn_go/internal/models/post"
+	feed_queue "otus_sn_go/internal/queue/feed-queue"
 )
 
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
@@ -43,6 +45,22 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		httpHelper.InternalServerErrorResponse(w)
 		return
 	}
+
+	// handle post creation
+	go func() {
+		var ctx = context.Background()
+		friendsData, friendDataErr := user.GetFriendsData(ctx)
+		if friendDataErr != nil {
+			logger.Error(friendDataErr.Error())
+			return
+		}
+		for _, item := range friendsData.IncomingRequests {
+			feed_queue.InsertToQueue(item.Id)
+		}
+		for _, item := range friendsData.Friends {
+			feed_queue.InsertToQueue(item.Id)
+		}
+	}()
 
 	httpHelper.JsonResponse(w, post.ToResponse())
 }

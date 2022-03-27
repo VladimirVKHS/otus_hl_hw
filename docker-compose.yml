@@ -71,6 +71,24 @@ services:
         reservations:
           memory: 512M
           cpus: '1.0'
+  redis:
+    container_name: otus_sn_redis
+    build:
+      context: ./docker/redis
+    restart: always
+    ports:
+      - "16379:6379"
+    networks:
+      - internal
+  rabbitmq:
+    container_name: otus_sn_rabbitmq
+    image: rabbitmq:management-alpine
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - internal
 networks:
   internal:
     driver: bridge

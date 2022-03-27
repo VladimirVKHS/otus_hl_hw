@@ -11,6 +11,9 @@ import (
 	"otus_sn_go/internal/logger"
 	_ "otus_sn_go/internal/migrations"
 	"otus_sn_go/internal/otusdb"
+	"otus_sn_go/internal/otusrabbit"
+	"otus_sn_go/internal/otusredis"
+	feed_queue "otus_sn_go/internal/queue/feed-queue"
 	"otus_sn_go/internal/routes"
 	"strconv"
 )
@@ -22,6 +25,13 @@ func main() {
 	logger.Init()
 	otusdb.InitDb()
 	defer otusdb.CloseDb()
+	otusredis.InitDb()
+	defer otusredis.CloseClient()
+	otusrabbit.Init()
+	defer otusrabbit.Close()
+	if err := feed_queue.InitQueueHandler(); err != nil {
+		panic(err)
+	}
 
 	goose.SetDialect("mysql")
 	args := os.Args
