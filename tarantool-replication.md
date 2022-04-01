@@ -24,6 +24,10 @@
         return box.tuple.new({meta, data})
     end
 
+## Настройка репликатора Tarantool
+
+   [replicatord.yml](docker/tarantool/replicator/replicatord.yml)
+
 ## Нагрузочное тестирование
 
 ### Параметры
