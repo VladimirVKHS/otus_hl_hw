@@ -89,6 +89,26 @@ services:
       - "15672:15672"
     networks:
       - internal
+  tarantool:
+    container_name: otus_sn_tarantool
+    image: tarantool/tarantool:1.10.2
+    restart: always
+    ports:
+      - "3301:3301"
+    networks:
+      - internal
+    volumes:
+      - ./docker/tarantool/app:/opt/tarantool
+  tarantool_replicator:
+    container_name: otus_sn_tarantool_replicator
+    image: polosaty/mysql-tarantool-replication
+    restart: always
+    user: "${UID}:${GID}"
+    networks:
+      - internal
+    volumes:
+      - ./docker/tarantool/replicator/replicatord.yml:/replicatord.yml
+    command: ./replicatord -c /replicatord.yml -l /dev/stderr
 networks:
   internal:
     driver: bridge

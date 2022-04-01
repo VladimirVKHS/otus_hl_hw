@@ -1,0 +1,20 @@
+mysql:
+  host: otus_sn_mysql_master
+  port: 3306
+  user: otus
+  password: otus
+  connect_retry: 15 # seconds
+
+tarantool:
+  host: otus_sn_tarantool:3301
+  binlog_pos_space: 512
+  binlog_pos_key: 0
+  connect_retry: 15 # seconds
+  sync_retry: 1000 # milliseconds
+
+mappings:
+  - database: otus
+    table: users
+    columns: [ id, first_name, last_name, login, age, interests, city, is_public, created_at ]
+    space: 513
+    key_fields: [ 0 ]

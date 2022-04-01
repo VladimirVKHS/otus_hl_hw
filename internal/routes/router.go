@@ -37,6 +37,7 @@ func RegisterRouter() *chi.Mux {
 		})
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", user_data_handler.GetUsersHandler)
+			r.Get("/tarantool", user_data_handler.GetUsersTarantoolHandler)
 			r.Route("/{id:[0-9]+}", func(r chi.Router) {
 				r.Get("/", user_data_handler.GetUserHandler)
 				r.With(AuthMiddleware).Post("/add_to_friends", user_data_handler.AddToFriendsHandler)

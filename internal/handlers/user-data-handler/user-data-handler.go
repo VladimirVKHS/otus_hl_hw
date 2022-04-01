@@ -59,3 +59,28 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 	httpHelper.JsonResponse(w, result.ToResponse())
 }
+
+func GetUsersTarantoolHandler(w http.ResponseWriter, r *http.Request) {
+	result := &user2.UsersListResponse{}
+	result.Page, _ = strconv.Atoi(r.URL.Query().Get("page"))
+	if result.Page == 0 {
+		result.Page = 1
+	}
+	result.PerPage, _ = strconv.Atoi(r.URL.Query().Get("per_page"))
+	if result.PerPage == 0 {
+		result.PerPage = 10
+	}
+	getAll, _ := strconv.Atoi(r.URL.Query().Get("get_all"))
+	result.GetAll = getAll > 0
+	result.Search = ""
+
+	err := user2.GetPublicUsersFromTarantool(r.Context(), result)
+	if err != nil {
+		fmt.Println(err)
+		logger.Error(err.Error())
+		httpHelper.InternalServerErrorResponse(w)
+		return
+	}
+
+	httpHelper.JsonResponse(w, result.ToResponse())
+}

@@ -13,6 +13,7 @@ import (
 	"otus_sn_go/internal/otusdb"
 	"otus_sn_go/internal/otusrabbit"
 	"otus_sn_go/internal/otusredis"
+	"otus_sn_go/internal/otustarantool"
 	feed_queue "otus_sn_go/internal/queue/feed-queue"
 	"otus_sn_go/internal/routes"
 	"strconv"
@@ -29,6 +30,8 @@ func main() {
 	defer otusredis.CloseClient()
 	otusrabbit.Init()
 	defer otusrabbit.Close()
+	otustarantool.InitDb()
+	defer otustarantool.CloseConnection()
 	if err := feed_queue.InitQueueHandler(); err != nil {
 		panic(err)
 	}

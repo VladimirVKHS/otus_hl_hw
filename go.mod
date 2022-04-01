@@ -26,6 +26,7 @@ require (
 	github.com/pressly/goose/v3 v3.5.0 // indirect
 	github.com/roberthodgen/spa-server v0.0.0-20171007154335-bb87b4ff3253 // indirect
 	github.com/streadway/amqp v1.0.0 // indirect
+	github.com/tarantool/go-tarantool v0.0.0-20220330122907-31ebde8f41b3 // indirect
 	github.com/throttled/throttled v2.2.5+incompatible // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3 // indirect
