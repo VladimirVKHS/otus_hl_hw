@@ -4,6 +4,7 @@
 
 export const environment = {
   apiUrl: 'http://localhost:8085/api/',
+  wsUrl: 'http://localhost:8086/',
   production: false
 };
 

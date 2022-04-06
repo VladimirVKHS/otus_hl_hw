@@ -11,12 +11,26 @@ var Ch *amqp.Channel
 func Init() {
 	host, _ := os.LookupEnv("RABBIT_HOST")
 	port, _ := os.LookupEnv("RABBIT_PORT")
+	wsExchange, _ := os.LookupEnv("RABBIT_WS_EXCHANGE")
 	conn, err := amqp.Dial("amqp://guest:guest@" + host + ":" + port + "/")
 	if err != nil {
 		panic(err)
 	}
 
 	Ch, err = conn.Channel()
+	if err != nil {
+		panic(err)
+	}
+
+	err = Ch.ExchangeDeclare(
+		wsExchange, // name
+		"direct",   // type
+		false,      // durable
+		false,      // auto-deleted
+		false,      // internal
+		false,      // no-wait
+		nil,        // arguments
+	)
 	if err != nil {
 		panic(err)
 	}
