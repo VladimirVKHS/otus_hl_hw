@@ -2,6 +2,7 @@ CREATE USER 'otus'@'%' IDENTIFIED BY 'otus';
 CREATE DATABASE otus;
 GRANT ALL PRIVILEGES ON otus.* TO 'otus'@'%';
 GRANT replication slave ON *.* TO 'otus'@'%';
+FLUSH PRIVILEGES;
 
 CHANGE MASTER TO
 MASTER_HOST='otus_sn_mysql_master',
