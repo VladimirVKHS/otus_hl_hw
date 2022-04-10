@@ -1,0 +1,15 @@
+CREATE USER 'otus'@'%' IDENTIFIED BY 'otus';
+CREATE DATABASE otus;
+GRANT ALL PRIVILEGES ON otus.* TO 'otus'@'%';
+GRANT replication slave ON *.* TO 'otus'@'%';
+
+CHANGE MASTER TO
+MASTER_HOST='otus_sn_mysql_master',
+MASTER_USER='otus',
+MASTER_PASSWORD='otus',
+MASTER_PORT=3306,
+MASTER_LOG_FILE='binlog.000002',
+MASTER_LOG_POS=156,
+MASTER_CONNECT_RETRY=10;
+
+START SLAVE;
