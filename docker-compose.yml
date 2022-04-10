@@ -24,7 +24,6 @@ services:
         reservations:
           memory: 512M
           cpus: '1.0'
-
   slave1:
     container_name: otus_sn_mysql_slave1
     build:
@@ -87,6 +86,39 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - internal
+  app1:
+    container_name: otus_sn_app1
+    restart: always
+    build:
+      context: .
+    volumes:
+      - ./docker/app/env:/var/app/.env
+    ports:
+      - "18085:8085"
+    networks:
+      - internal
+  app2:
+    container_name: otus_sn_app2
+    restart: always
+    build:
+      context: .
+    volumes:
+      - ./docker/app/env:/var/app/.env
+    ports:
+      - "18086:8085"
+    networks:
+      - internal
+  app3:
+    container_name: otus_sn_app3
+    restart: always
+    build:
+      context: .
+    volumes:
+      - ./docker/app/env:/var/app/.env
+    ports:
+      - "18087:8085"
     networks:
       - internal
 networks:
