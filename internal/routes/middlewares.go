@@ -6,6 +6,8 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/lestrrat-go/jwx/jwt"
 	"net/http"
+	"os"
+	"otus_sn_go/internal/constants"
 	jwt_helper "otus_sn_go/internal/helpers/jwt"
 	user2 "otus_sn_go/internal/models/user"
 	"time"
@@ -65,5 +67,13 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		// Token is authenticated, pass it through
 		next.ServeHTTP(w, r)
+	})
+}
+
+func RequestIDMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestID := os.Getuid()
+		ctx := context.WithValue(r.Context(), constants.RequestIDKey, requestID)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

@@ -13,6 +13,7 @@ import (
 	"otus_sn_go/internal/otusdb"
 	"otus_sn_go/internal/otusrabbit"
 	"otus_sn_go/internal/otusredis"
+	"otus_sn_go/internal/otussndialog"
 	feed_queue "otus_sn_go/internal/queue/feed-queue"
 	"otus_sn_go/internal/routes"
 	"strconv"
@@ -32,6 +33,7 @@ func main() {
 	if err := feed_queue.InitQueueHandler(); err != nil {
 		panic(err)
 	}
+	otussndialog.Init()
 
 	goose.SetDialect("mysql")
 	args := os.Args

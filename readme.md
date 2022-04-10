@@ -23,3 +23,4 @@ Golang backend + angular web client
     REDIS_PORT=16379
     RABBIT_HOST=127.0.0.1
     RABBIT_PORT=15671
+    DIALOG_SERVICE_HOST=http://localhost:7000

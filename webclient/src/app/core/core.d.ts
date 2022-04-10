@@ -62,3 +62,14 @@ declare interface IPost extends IPostCreateRequest {
   CreatedAt: string;
   user: IUser;
 }
+
+declare interface IMessage {
+  Id: number;
+  Message: string;
+  AuthorId: number;
+  CreatedAt: string;
+}
+
+declare interface IMessageResponse {
+  items: IMessage[];
+}

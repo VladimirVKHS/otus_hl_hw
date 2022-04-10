@@ -7,6 +7,7 @@ import (
 	"os"
 	user_auth_handler "otus_sn_go/internal/handlers/user-auth-handler"
 	user_data_handler "otus_sn_go/internal/handlers/user-data-handler"
+	user_messages_handler "otus_sn_go/internal/handlers/user-messages-handler"
 	user_posts_handler "otus_sn_go/internal/handlers/user-posts-handler"
 	user_profile_handler "otus_sn_go/internal/handlers/user-profile-handler"
 )
@@ -15,6 +16,7 @@ func RegisterRouter() *chi.Mux {
 
 	r := chi.NewRouter()
 	r.With(
+		RequestIDMiddleware,
 		JwtMiddleware,
 		cors.Handler(cors.Options{
 			// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
@@ -49,6 +51,10 @@ func RegisterRouter() *chi.Mux {
 		r.Route("/posts", func(r chi.Router) {
 			r.With(AuthMiddleware).Post("/", user_posts_handler.CreatePostHandler)
 			r.With(AuthMiddleware).Get("/feed", user_posts_handler.GetUserFeedHandler)
+		})
+		r.Route("/messages", func(r chi.Router) {
+			r.With(AuthMiddleware).Post("/{id:[0-9]+}", user_messages_handler.CreateMessageHandler)
+			r.With(AuthMiddleware).Get("/{id:[0-9]+}", user_messages_handler.GetMassagesHandler)
 		})
 	})
 	webclientDir, _ := os.LookupEnv("WEBCLIENT_DIR")

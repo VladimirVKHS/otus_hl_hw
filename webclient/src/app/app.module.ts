@@ -17,6 +17,7 @@ import { PostCardComponent } from './components/post-card/post-card.component';
 import { PostPageComponent } from './pages/post-page/post-page.component';
 import { CreatePostPageComponent } from './pages/create-post-page/create-post-page.component';
 import { FeedPageComponentComponent } from './pages/feed-page-component/feed-page-component.component';
+import { MessageCardComponent } from './components/message-card/message-card.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { FeedPageComponentComponent } from './pages/feed-page-component/feed-pag
     PostCardComponent,
     PostPageComponent,
     CreatePostPageComponent,
-    FeedPageComponentComponent
+    FeedPageComponentComponent,
+    MessageCardComponent
   ],
   imports: [
     BrowserModule,

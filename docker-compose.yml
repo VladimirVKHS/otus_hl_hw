@@ -6,11 +6,11 @@ services:
     build:
       context: ./docker/mysql/master
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
+    restart: on-failure
     environment:
       MYSQL_ROOT_PASSWORD: otus
     volumes:
-      - ./docker/mysql/scripts:/docker-entrypoint-initdb.d
+      - ./docker/mysql/master/scripts:/docker-entrypoint-initdb.d
       - ./docker/mysql/master/data:/var/lib/mysql
     ports:
       - "33061:3306"
@@ -24,17 +24,22 @@ services:
         reservations:
           memory: 512M
           cpus: '1.0'
-
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
   slave1:
     container_name: otus_sn_mysql_slave1
+    depends_on:
+      - master
     build:
       context: ./docker/mysql/slave1
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
+    restart: on-failure
     environment:
       MYSQL_ROOT_PASSWORD: otus
     volumes:
-      - ./docker/mysql/scripts:/docker-entrypoint-initdb.d
+      - ./docker/mysql/slave1/scripts:/docker-entrypoint-initdb.d
       - ./docker/mysql/slave1/data:/var/lib/mysql
     ports:
       - "33062:3306"
@@ -48,16 +53,22 @@ services:
         reservations:
           memory: 512M
           cpus: '1.0'
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
   slave2:
     container_name: otus_sn_mysql_slave2
+    depends_on:
+      - master
     build:
       context: ./docker/mysql/slave2
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
+    restart: on-failure
     environment:
       MYSQL_ROOT_PASSWORD: otus
     volumes:
-      - ./docker/mysql/scripts:/docker-entrypoint-initdb.d
+      - ./docker/mysql/slave1/scripts:/docker-entrypoint-initdb.d
       - ./docker/mysql/slave2/data:/var/lib/mysql
     ports:
       - "33063:3306"
@@ -71,11 +82,15 @@ services:
         reservations:
           memory: 512M
           cpus: '1.0'
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
   redis:
     container_name: otus_sn_redis
     build:
       context: ./docker/redis
-    restart: always
+    restart: on-failure
     ports:
       - "16379:6379"
     networks:
@@ -83,12 +98,17 @@ services:
   rabbitmq:
     container_name: otus_sn_rabbitmq
     image: rabbitmq:management-alpine
-    restart: always
+    restart: on-failure
     ports:
       - "5672:5672"
       - "15672:15672"
     networks:
       - internal
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 networks:
   internal:
     driver: bridge
