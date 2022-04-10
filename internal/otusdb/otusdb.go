@@ -9,6 +9,7 @@ import (
 )
 
 var Db *sql.DB
+var DbReadOnly *sql.DB
 
 var Quoter sqlexp.Quoter
 
@@ -29,6 +30,17 @@ func InitDb() {
 	if err != nil {
 		Quoter = TmpMysqlQuoter{}
 	}
+
+	dbReadOnlyHost, _ := os.LookupEnv("DB_READ_ONLY_HOST")
+	dbReadOnlyPort, _ := os.LookupEnv("DB_READ_ONLY_PORT")
+
+	db2, err2 := sql.Open("mysql", dbUser+":"+dbPassword+"@tcp("+dbReadOnlyHost+":"+dbReadOnlyPort+")/"+dbName)
+	if err2 != nil {
+		panic(err)
+	}
+	db2.SetMaxOpenConns(10)
+	db2.SetMaxIdleConns(0)
+	DbReadOnly = db2
 }
 
 func CloseDb() error {

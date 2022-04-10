@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+	"otus_sn_go/internal/logger"
 	"otus_sn_go/internal/otusdb"
 	"strings"
 )
@@ -90,16 +91,17 @@ func GetPublicUsers(ctx context.Context, result *UsersListResponse) error {
 
 	if !result.GetAll {
 		limitQuery = fmt.Sprintf(" LIMIT %d OFFSET %d", result.PerPage, result.PerPage*(result.Page-1))
-		err := otusdb.Db.QueryRowContext(
+		err := otusdb.DbReadOnly.QueryRowContext(
 			ctx,
 			"SELECT count(id) as c FROM users WHERE "+searchQuery+"is_public = 1",
 		).Scan(&result.TotalItems)
 		if err != nil {
+			logger.Error(err.Error())
 			return err
 		}
 	}
 
-	rows, err2 := otusdb.Db.QueryContext(
+	rows, err2 := otusdb.DbReadOnly.QueryContext(
 		ctx,
 		"SELECT id, first_name, last_name, password, login, city, age, interests, is_public, sex, created_at FROM users WHERE "+
 			searchQuery+
@@ -108,6 +110,7 @@ func GetPublicUsers(ctx context.Context, result *UsersListResponse) error {
 			limitQuery,
 	)
 	if err2 != nil {
+		logger.Error(err2.Error())
 		return err2
 	}
 	defer rows.Close()
