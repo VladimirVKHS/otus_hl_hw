@@ -8,6 +8,7 @@ import { GuestOnlyGuard } from './guards/guest-only.guard';
 import {AuthorizedOnlyGuard} from './guards/authorized-only.guard';
 import {PostsApiService} from './services/posts-api.service';
 import {MessagesApiService} from './services/messages-api.service';
+import {CountersApiService} from './services/counters-api.service';
 
 
 
@@ -26,6 +27,7 @@ import {MessagesApiService} from './services/messages-api.service';
     GuestOnlyGuard,
     AuthorizedOnlyGuard,
     MessagesApiService,
+    CountersApiService,
   ]
 })
 export class CoreModule { }

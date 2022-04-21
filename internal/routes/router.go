@@ -6,6 +6,7 @@ import (
 	spa "github.com/roberthodgen/spa-server"
 	"os"
 	user_auth_handler "otus_sn_go/internal/handlers/user-auth-handler"
+	user_counters_handler "otus_sn_go/internal/handlers/user-counters-handler"
 	user_data_handler "otus_sn_go/internal/handlers/user-data-handler"
 	user_messages_handler "otus_sn_go/internal/handlers/user-messages-handler"
 	user_posts_handler "otus_sn_go/internal/handlers/user-posts-handler"
@@ -54,7 +55,11 @@ func RegisterRouter() *chi.Mux {
 		})
 		r.Route("/messages", func(r chi.Router) {
 			r.With(AuthMiddleware).Post("/{id:[0-9]+}", user_messages_handler.CreateMessageHandler)
+			r.With(AuthMiddleware).Post("/{id:[0-9]+}/mark_as_read", user_messages_handler.MarkAsReadHandler)
 			r.With(AuthMiddleware).Get("/{id:[0-9]+}", user_messages_handler.GetMassagesHandler)
+		})
+		r.Route("/counters", func(r chi.Router) {
+			r.With(AuthMiddleware).Get("/", user_counters_handler.GetCountersHandler)
 		})
 	})
 	webclientDir, _ := os.LookupEnv("WEBCLIENT_DIR")

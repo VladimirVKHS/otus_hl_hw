@@ -22,12 +22,28 @@ type Message struct {
 	CreatedAt string
 }
 
+type MarkAsReadRequest struct {
+	AuthorId    int      `validate:"required"`
+	AddresseeId int      `validate:"required"`
+	MessageIds  []string `validate:"required,gt=0,lte=1000,dive,uuid"`
+}
+
+type MarkAsReadResult struct {
+	AffectedMessages int
+}
+
 func (m *Message) ToResponse() map[string]interface{} {
 	return map[string]interface{}{
 		"Id":        m.Id,
 		"Message":   m.Message,
 		"AuthorId":  m.AuthorId,
 		"CreatedAt": m.CreatedAt,
+	}
+}
+
+func (m *MarkAsReadResult) ToResponse() map[string]interface{} {
+	return map[string]interface{}{
+		"AffectedMessages": m.AffectedMessages,
 	}
 }
 
@@ -82,6 +98,26 @@ func PostMessage(request *MessageCreateRequest, requestId string) (*Message, err
 	}
 	defer resp.Body.Close()
 	result := &Message{}
+	if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func MarkAsRead(request *MarkAsReadRequest, requestId string) (*MarkAsReadResult, error) {
+	jsonData, _ := json.Marshal(&request)
+	req, err := http.NewRequest("POST", url+"/api/messages/mark_as_read", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("X-REQUEST-ID", requestId)
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	result := &MarkAsReadResult{}
 	if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
 		return nil, err
 	}

@@ -6,6 +6,7 @@ import {UsersApiService} from '../../core/services/users-api.service';
 import {MessagesApiService} from '../../core/services/messages-api.service';
 import {AuthService} from '../../core/services/auth.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {CountersApiService} from '../../core/services/counters-api.service';
 
 @Component({
   selector: 'app-user-page',
@@ -33,9 +34,11 @@ export class UserPageComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private messagesApi: MessagesApiService,
     private fb: FormBuilder,
+    private countersApi: CountersApiService
   ) { }
 
   ngOnInit(): void {
+    const user = this.auth.payload?.user;
     this.data = this.activatedRoute.snapshot.data.user_data;
     this.activatedRoute.params.pipe(takeUntil(this.destroy$$)).subscribe(() => {
       this.data = this.activatedRoute.snapshot.data.user_data;
@@ -53,6 +56,26 @@ export class UserPageComponent implements OnInit, OnDestroy {
       this.showMessages = true;
       this.messagesApi.getMessages(this.data.user.Id).subscribe((data) => {
         this.messages = data.items;
+        // mark as read
+        if (user) {
+          setTimeout(() => {
+            const messageIds = [];
+            this.messages.forEach((m) => {
+              if (m.AuthorId !== user.Id && !m.IsRead) {
+                messageIds.push(m.Id);
+              }
+            });
+            if (messageIds.length > 0) {
+              this.messagesApi.markMessagesAsRead(this.data.user.Id, messageIds).subscribe((result) => {
+                const c = this.countersApi.counter;
+                if (c) {
+                  c.UnreadMessagesCount = c.UnreadMessagesCount - result.AffectedMessages;
+                  this.countersApi.counter = c;
+                }
+              });
+            }
+          }, 2000);
+        }
       });
       this.messageForm = this.fb.group({
         Message: ['', [Validators.required, Validators.maxLength(4096)]],

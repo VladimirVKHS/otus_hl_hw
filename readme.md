@@ -24,3 +24,4 @@ Golang backend + angular web client
     RABBIT_HOST=127.0.0.1
     RABBIT_PORT=15671
     DIALOG_SERVICE_HOST=http://localhost:7000
+    COUNTERS_SERVICE_URL=http://localhost:7001

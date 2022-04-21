@@ -25,6 +25,9 @@
     <li *ngIf="authorized">
       <a href="JavaScript:" (click)="logout()">Logout</a>
     </li>
+    <li *ngIf="counter">
+      <p>Unread messages: {{counter.UnreadMessagesCount}}</p>
+    </li>
   </ul>
   <a href="#offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
   <div class="uk-navbar-brand uk-navbar-center uk-visible-small">Social network</div>

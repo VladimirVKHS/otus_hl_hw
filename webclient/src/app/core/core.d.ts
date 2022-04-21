@@ -68,8 +68,19 @@ declare interface IMessage {
   Message: string;
   AuthorId: number;
   CreatedAt: string;
+  IsRead: boolean;
 }
 
 declare interface IMessageResponse {
   items: IMessage[];
+}
+
+declare interface ICounter {
+  UserId: number;
+  UnreadMessagesCount: number;
+}
+
+
+declare interface IMarkAsReadResponse {
+  AffectedMessages: number;
 }

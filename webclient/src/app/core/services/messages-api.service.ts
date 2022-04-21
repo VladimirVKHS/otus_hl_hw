@@ -22,4 +22,10 @@ export class MessagesApiService {
       Message: message
     });
   }
+
+  public markMessagesAsRead(userId: number, messageIds: string[]): Observable<IMarkAsReadResponse> {
+    return this.api.post(this.endpoint + userId + '/mark_as_read', {
+      MessageIds: messageIds
+    });
+  }
 }
