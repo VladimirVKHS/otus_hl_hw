@@ -16,6 +16,11 @@ services:
       - slave2
       - rabbitmq
       - redis
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
   master:
     container_name: otus_sn_mysql_master
     build:
@@ -35,6 +40,11 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
   slave1:
     container_name: otus_sn_mysql_slave1
     build:
@@ -56,6 +66,11 @@ services:
       retries: 10
     depends_on:
       - master
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
   slave2:
     container_name: otus_sn_mysql_slave2
     build:
@@ -77,6 +92,11 @@ services:
       retries: 10
     depends_on:
       - master
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
   redis:
     container_name: otus_sn_redis
     build:
@@ -100,6 +120,11 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
 networks:
   otus_sn_network:
     external: false
