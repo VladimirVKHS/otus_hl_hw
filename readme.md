@@ -6,6 +6,11 @@ Golang backend + angular web client
 
     docker-compose up
 
+## Fill database
+
+    docker exec -i -t otus_sn_app bash
+    main db:create-fake-users 100
+
 ## .env configuration
 
     JWT_SECRET={any_string}}
