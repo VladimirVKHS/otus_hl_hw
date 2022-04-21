@@ -1,6 +1,21 @@
 version: '3'
 
 services:
+  app:
+    container_name: otus_sn_app
+    build:
+      context: .
+    restart: on-failure
+    ports:
+      - "8085:8085"
+    networks:
+      - otus_sn_network
+    depends_on:
+      - master
+      - slave1
+      - slave2
+      - rabbitmq
+      - redis
   master:
     container_name: otus_sn_mysql_master
     build:
@@ -10,21 +25,16 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: otus
     volumes:
-      - ./docker/mysql/scripts:/docker-entrypoint-initdb.d
+      - ./docker/mysql/master/scripts:/docker-entrypoint-initdb.d
       - ./docker/mysql/master/data:/var/lib/mysql
     ports:
       - "33061:3306"
     networks:
-      - internal
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '1.0'
-        reservations:
-          memory: 512M
-          cpus: '1.0'
-
+      - otus_sn_network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
   slave1:
     container_name: otus_sn_mysql_slave1
     build:
@@ -34,20 +44,18 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: otus
     volumes:
-      - ./docker/mysql/scripts:/docker-entrypoint-initdb.d
+      - ./docker/mysql/slave1/scripts:/docker-entrypoint-initdb.d
       - ./docker/mysql/slave1/data:/var/lib/mysql
     ports:
       - "33062:3306"
     networks:
-      - internal
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '1.0'
-        reservations:
-          memory: 512M
-          cpus: '1.0'
+      - otus_sn_network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    depends_on:
+      - master
   slave2:
     container_name: otus_sn_mysql_slave2
     build:
@@ -57,20 +65,18 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: otus
     volumes:
-      - ./docker/mysql/scripts:/docker-entrypoint-initdb.d
+      - ./docker/mysql/slave1/scripts:/docker-entrypoint-initdb.d
       - ./docker/mysql/slave2/data:/var/lib/mysql
     ports:
       - "33063:3306"
     networks:
-      - internal
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '1.0'
-        reservations:
-          memory: 512M
-          cpus: '1.0'
+      - otus_sn_network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    depends_on:
+      - master
   redis:
     container_name: otus_sn_redis
     build:
@@ -79,7 +85,7 @@ services:
     ports:
       - "16379:6379"
     networks:
-      - internal
+      - otus_sn_network
   rabbitmq:
     container_name: otus_sn_rabbitmq
     image: rabbitmq:management-alpine
@@ -88,7 +94,13 @@ services:
       - "5672:5672"
       - "15672:15672"
     networks:
-      - internal
+      - otus_sn_network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 networks:
-  internal:
-    driver: bridge
+  otus_sn_network:
+    external: false
+    name: otus_sn_network
