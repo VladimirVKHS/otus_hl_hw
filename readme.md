@@ -4,7 +4,12 @@ Golang backend + angular web client
 
 ## Run
 
+- Build and run services:
+
+
     docker-compose up
+
+- Open http://localhost:8085
 
 ## Fill database
 
