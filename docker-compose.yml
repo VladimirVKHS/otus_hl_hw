@@ -1,12 +1,32 @@
 version: '3'
 
 services:
+  app:
+    container_name: otus_sn_app
+    build:
+      context: .
+    restart: on-failure
+    ports:
+      - "8085:8085"
+    networks:
+      - otus_sn_network
+    depends_on:
+      - master
+      - slave1
+      - slave2
+      - rabbitmq
+      - redis
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '1.0'
   master:
     container_name: otus_sn_mysql_master
     build:
       context: ./docker/mysql/master
     command: --default-authentication-plugin=mysql_native_password
-    restart: on-failure
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: otus
     volumes:
@@ -15,27 +35,22 @@ services:
     ports:
       - "33061:3306"
     networks:
-      - internal
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '1.0'
-        reservations:
-          memory: 512M
-          cpus: '1.0'
+      - otus_sn_network
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
   slave1:
     container_name: otus_sn_mysql_slave1
-    depends_on:
-      - master
     build:
       context: ./docker/mysql/slave1
     command: --default-authentication-plugin=mysql_native_password
-    restart: on-failure
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: otus
     volumes:
@@ -44,27 +59,24 @@ services:
     ports:
       - "33062:3306"
     networks:
-      - internal
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '1.0'
-        reservations:
-          memory: 512M
-          cpus: '1.0'
+      - otus_sn_network
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
-  slave2:
-    container_name: otus_sn_mysql_slave2
     depends_on:
       - master
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+  slave2:
+    container_name: otus_sn_mysql_slave2
     build:
       context: ./docker/mysql/slave2
     command: --default-authentication-plugin=mysql_native_password
-    restart: on-failure
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: otus
     volumes:
@@ -73,42 +85,47 @@ services:
     ports:
       - "33063:3306"
     networks:
-      - internal
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '1.0'
-        reservations:
-          memory: 512M
-          cpus: '1.0'
+      - otus_sn_network
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
+    depends_on:
+      - master
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
   redis:
     container_name: otus_sn_redis
     build:
       context: ./docker/redis
-    restart: on-failure
+    restart: always
     ports:
       - "16379:6379"
     networks:
-      - internal
+      - otus_sn_network
   rabbitmq:
     container_name: otus_sn_rabbitmq
     image: rabbitmq:management-alpine
-    restart: on-failure
+    restart: always
     ports:
       - "5672:5672"
       - "15672:15672"
     networks:
-      - internal
+      - otus_sn_network
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
       interval: 30s
       timeout: 10s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
 networks:
-  internal:
-    driver: bridge
+  otus_sn_network:
+    external: false
+    name: otus_sn_network
