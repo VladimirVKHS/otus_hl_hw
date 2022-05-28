@@ -1,6 +1,50 @@
 version: '3'
 
 services:
+  consul-node1:
+    image: bitnami/consul:1.12.0
+    environment:
+      - CONSUL_BOOTSTRAP_EXPECT=3
+      - CONSUL_CLIENT_LAN_ADDRESS=0.0.0.0
+      - CONSUL_DISABLE_KEYRING_FILE=true
+      - CONSUL_RETRY_JOIN_ADDRESS=consul-node1
+    ports:
+      - '8300:8300'
+      - '8301:8301'
+      - '8301:8301/udp'
+      - '8500:8500'
+      - '8600:8600'
+      - '8600:8600/udp'
+    volumes:
+      - 'consul-node1_data:/bitnami'
+    networks:
+      - otus_sn_network
+
+  consul-node2:
+    image: bitnami/consul:1.12.0
+    environment:
+      - CONSUL_BOOTSTRAP_EXPECT=3
+      - CONSUL_CLIENT_LAN_ADDRESS=0.0.0.0
+      - CONSUL_DISABLE_KEYRING_FILE=true
+      - CONSUL_RETRY_JOIN_ADDRESS=consul-node1
+      - CONSUL_ENABLE_UI=false
+    volumes:
+      - 'consul-node2_data:/bitnami'
+    networks:
+      - otus_sn_network
+
+  consul-node3:
+    image: bitnami/consul:1.12.0
+    environment:
+      - CONSUL_BOOTSTRAP_EXPECT=3
+      - CONSUL_CLIENT_LAN_ADDRESS=0.0.0.0
+      - CONSUL_DISABLE_KEYRING_FILE=true
+      - CONSUL_RETRY_JOIN_ADDRESS=consul-node1
+      - CONSUL_ENABLE_UI=false
+    volumes:
+      - 'consul-node3_data:/bitnami'
+    networks:
+      - otus_sn_network
   app:
     container_name: otus_sn_app
     build:
@@ -129,3 +173,10 @@ networks:
   otus_sn_network:
     external: false
     name: otus_sn_network
+volumes:
+  consul-node1_data:
+    driver: local
+  consul-node2_data:
+    driver: local
+  consul-node3_data:
+    driver: local
