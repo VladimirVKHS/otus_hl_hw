@@ -12,5 +12,5 @@ REDIS_PORT=6379
 RABBIT_HOST=otus_sn_rabbitmq
 RABBIT_PORT=5672
 RABBIT_WS_EXCHANGE=ws
-DIALOG_SERVICE_URL=http://otus_sn_dialog_service:7000
+DIALOG_SERVICE_URL=http://otus_sn_dialog_haproxy:7000
 COUNTERS_SERVICE_URL=http://otus_sn_counters_service:7001
